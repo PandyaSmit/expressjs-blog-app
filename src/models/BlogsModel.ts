@@ -20,8 +20,8 @@ const BlogsSchema = new Schema(
     },
     category: { type: Array },
     author: { type: mongoose.Types.ObjectId, required: true },
-    createdAt: { type: Date, default: new Date() },
-    updatedAt: { type: Date, default: new Date() },
+    created_at: { type: Date, default: new Date() },
+    updated_at: { type: Date, default: new Date() },
   },
   { collection: "Blogs" }
 );

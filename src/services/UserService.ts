@@ -12,7 +12,7 @@ export class UserService {
 
   static async findOne(payload) {
     try {
-      await UsersModel.findOne(payload);
+      return UsersModel.findOne(payload);
     } catch (error) {
       throw error;
     }

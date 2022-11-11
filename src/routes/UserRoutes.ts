@@ -1,16 +1,17 @@
 import * as express from "express";
 import { UserMiddleware } from "../middlewares/UserMiddleware";
+import { register, login } from "../services/ValidationService";
 
 const userRoutes: express.Router = express.Router();
 /**
  * Account Register
  */
-userRoutes.post("/register", [UserMiddleware.register]);
+userRoutes.post("/register", [register, UserMiddleware.register]);
 
 /**
  * Account login
  */
-userRoutes.post("/login", [UserMiddleware.login]);
+userRoutes.post("/login", [login, UserMiddleware.login]);
 
 /**
  * Account auth
