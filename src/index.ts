@@ -7,6 +7,10 @@ const app = express();
 
 app.use(express.json());
 
+app.get("/", (req, res) => {
+  return res.status(200).send({ version: "1.0" });
+});
+
 app.use("/api/v1", router);
 
 app.listen(NODE_CONFIGS.PORT, async () => {
