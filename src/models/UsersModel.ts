@@ -3,11 +3,6 @@ import { user_roles_enum } from "../constants/users";
 
 const UsersSchema = new Schema(
   {
-    _id: {
-      type: mongoose.Types.ObjectId,
-      required: true,
-      default: new mongoose.Types.ObjectId(),
-    },
     name: { type: String, required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },

@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import * as crypto from "crypto-js";
 import { SECRET_KEY } from "../constants";
+import mongoose, { isValidObjectId } from "mongoose";
 
 export class UtilServices {
   static encryptPassword = (password: string) => {
@@ -18,6 +19,21 @@ export class UtilServices {
   };
 
   static verifyToken = (token: string) => {
-    return jwt.verify(token, SECRET_KEY);
+    try {
+      const decoded = jwt.verify(token, SECRET_KEY);
+
+      if (typeof decoded === "string") {
+        return { decoded };
+      }
+
+      return decoded;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
+
+  static convertToTypeObjectId = (value: string) => {
+    return isValidObjectId(value) ? value : new mongoose.Types.ObjectId(value);
   };
 }

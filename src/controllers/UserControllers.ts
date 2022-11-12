@@ -97,7 +97,7 @@ export class UserControllers {
         return res.status(400).json({ error: "token missing" });
       }
 
-      const bearerToken = auth.split("bearer" || "Bearer")[1];
+      const bearerToken = auth.split(" ")[1];
 
       const decodedToken = UtilServices.verifyToken(bearerToken);
 
@@ -113,10 +113,12 @@ export class UserControllers {
         return res.status(403).json({ error: "unauthorized" });
       }
 
+      req["user"] = decodedToken;
+
       next();
     } catch (error) {
       console.error(error);
-      return res.status(500).send({ error: "try again" });
+      return res.status(400).send({ error: "invalid token" });
     }
   }
 }

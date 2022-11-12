@@ -11,7 +11,7 @@ export class BlogsService {
 
   static async findOne(payload) {
     try {
-      await BlogsModel.findOne(payload);
+      return BlogsModel.findOne(payload);
     } catch (error) {
       throw error;
     }
@@ -19,23 +19,26 @@ export class BlogsService {
 
   static async delete(payload) {
     try {
-      await BlogsModel.findOne(payload);
+      await BlogsModel.deleteOne(payload);
     } catch (error) {
       throw error;
     }
   }
 
-  static async update(payload) {
+  static async update(findOptions, payload) {
     try {
-      await BlogsModel.findOne(payload);
+      await BlogsModel.updateOne(findOptions, payload);
     } catch (error) {
       throw error;
     }
   }
 
-  static async findAll(payload) {
+  static async findAll(filter, limit, skip) {
     try {
-      await BlogsModel.find(payload);
+      return {
+        rows: await BlogsModel.find(filter).skip(skip).limit(limit),
+        total: await BlogsModel.countDocuments(filter),
+      };
     } catch (error) {
       throw error;
     }
