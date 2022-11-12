@@ -57,7 +57,7 @@ export class UserControllers {
       });
 
       if (!user) {
-        return res.status(201).send({ message: "user not found" });
+        return res.status(404).send({ message: "user not found" });
       } else if (
         user &&
         !UtilServices.descryptPassword(password, user.password)

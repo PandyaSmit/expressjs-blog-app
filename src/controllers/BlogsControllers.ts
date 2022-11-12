@@ -99,7 +99,7 @@ export class BlogsControllers {
 
       const response = await BlogsService.findAll(filter, limit, offset);
 
-      return res.status(201).send(response);
+      return res.status(200).send(response);
     } catch (error) {
       console.error(error);
       return res.status(500).send({ error: "blog fetch failed" });
@@ -126,7 +126,7 @@ export class BlogsControllers {
       const blog = await BlogsService.findOne(findOptions);
 
       if (!blog) {
-        return res.status(400).send({ error: "blog does not exist" });
+        return res.status(404).send({ error: "blog does not exist" });
       } else if (
         req["user"].role === user_roles_enum.user &&
         blog.author !== req["user"].id
@@ -162,7 +162,7 @@ export class BlogsControllers {
 
       await BlogsService.update(findOptions, blogPayload);
 
-      return res.status(201).send({ message: "blog updated" });
+      return res.status(200).send({ message: "blog updated" });
     } catch (error) {
       console.error(error);
       return res.status(500).send({ error: "blog updation failed" });
@@ -189,7 +189,7 @@ export class BlogsControllers {
       const blog = await BlogsService.findOne(findOptions);
 
       if (!blog) {
-        return res.status(400).send({ error: "blog does not exist" });
+        return res.status(404).send({ error: "blog does not exist" });
       } else if (
         req["user"].role === user_roles_enum.user &&
         blog.author !== req["user"].id
@@ -199,7 +199,7 @@ export class BlogsControllers {
 
       await BlogsService.delete(findOptions);
 
-      return res.status(201).send({ message: "blog removed" });
+      return res.status(200).send({ message: "blog removed" });
     } catch (error) {
       console.error(error);
       return res.status(500).send({ error: "blog removal failed" });
