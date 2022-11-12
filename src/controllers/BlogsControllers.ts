@@ -6,6 +6,13 @@ import { CategoryService } from "../services/CategoryService";
 import { UtilServices } from "../services/UtilService";
 
 export class BlogsControllers {
+  /**
+   * Create new blog
+   * @param req
+   * @param res
+   * @param next
+   * @returns
+   */
   static async create(
     req: express.Request,
     res: express.Response,
@@ -26,10 +33,16 @@ export class BlogsControllers {
         return res.status(400).send({ error: "invalid categories" });
       }
 
+      const dateNow = new Date();
+
       const blogPayload = {
         ...req.body,
         author: req["user"].id,
         categories: categories.map((category) => category._id),
+        published_date: dateNow,
+        modify_date: dateNow,
+        updated_at: dateNow,
+        created_at: dateNow,
       };
 
       await BlogsService.create(blogPayload);
@@ -41,6 +54,13 @@ export class BlogsControllers {
     }
   }
 
+  /**
+   * List user blogs with filter and paging
+   * @param req
+   * @param res
+   * @param next
+   * @returns
+   */
   static async list(
     req: express.Request,
     res: express.Response,
@@ -49,18 +69,12 @@ export class BlogsControllers {
     try {
       const { limit, offset, published_date, author, category } = req.query;
 
-      let filter = {};
+      const filter = {};
 
-      if (author && req["user"].role === user_roles_enum.admin) {
-        filter = {
-          ...filter,
-          author,
-        };
-      } else {
-        filter = {
-          ...filter,
-          author: req["user"].id,
-        };
+      if (author) {
+        filter["author"] = author;
+      } else if (req["user"].role === user_roles_enum.user) {
+        filter["author"] = req["user"].id;
       }
 
       if (published_date) {
@@ -73,20 +87,14 @@ export class BlogsControllers {
           .format("MM DD YYYY 00:00:00")
           .toString();
 
-        filter = {
-          ...filter,
-          published_date: {
-            $gte: new Date(startDate).toISOString(),
-            $lt: new Date(endDate).toISOString(),
-          },
+        filter["published_date"] = {
+          $gte: new Date(startDate).toISOString(),
+          $lt: new Date(endDate).toISOString(),
         };
       }
 
       if (category) {
-        filter = {
-          ...filter,
-          category,
-        };
+        filter["category"] = category;
       }
 
       const response = await BlogsService.findAll(filter, limit, offset);
@@ -98,26 +106,32 @@ export class BlogsControllers {
     }
   }
 
+  /**
+   * Update blog
+   * @param req
+   * @param res
+   * @param next
+   * @returns
+   */
   static async update(
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
   ) {
     try {
-      const findOptions =
-        req["user"].role === user_roles_enum.admin
-          ? {
-              _id: UtilServices.convertToTypeObjectId(req.params.id),
-            }
-          : {
-              _id: UtilServices.convertToTypeObjectId(req.params.id),
-              author: req["user"].id,
-            };
+      const findOptions = {
+        _id: UtilServices.convertToTypeObjectId(req.params.id),
+      };
 
       const blog = await BlogsService.findOne(findOptions);
 
       if (!blog) {
         return res.status(400).send({ error: "blog does not exist" });
+      } else if (
+        req["user"].role === user_roles_enum.user &&
+        blog.author !== req["user"].id
+      ) {
+        return res.status(403).json({ error: "unauthorized" });
       }
 
       const blogPayload = {
@@ -146,12 +160,7 @@ export class BlogsControllers {
         };
       }
 
-      await BlogsService.update(
-        {
-          _id: UtilServices.convertToTypeObjectId(req.params.id),
-        },
-        blogPayload
-      );
+      await BlogsService.update(findOptions, blogPayload);
 
       return res.status(201).send({ message: "blog updated" });
     } catch (error) {
@@ -160,21 +169,33 @@ export class BlogsControllers {
     }
   }
 
+  /**
+   * Remove blog
+   * @param req
+   * @param res
+   * @param next
+   * @returns
+   */
   static async remove(
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
   ) {
     try {
-      const findOptions =
-        req["user"].role === user_roles_enum.admin
-          ? {
-              _id: UtilServices.convertToTypeObjectId(req.params.id),
-            }
-          : {
-              _id: UtilServices.convertToTypeObjectId(req.params.id),
-              author: req["user"].id,
-            };
+      const findOptions = {
+        _id: UtilServices.convertToTypeObjectId(req.params.id),
+      };
+
+      const blog = await BlogsService.findOne(findOptions);
+
+      if (!blog) {
+        return res.status(400).send({ error: "blog does not exist" });
+      } else if (
+        req["user"].role === user_roles_enum.user &&
+        blog.author !== req["user"].id
+      ) {
+        return res.status(403).json({ error: "unauthorized" });
+      }
 
       await BlogsService.delete(findOptions);
 

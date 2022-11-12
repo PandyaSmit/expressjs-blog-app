@@ -1,0 +1,14 @@
+[
+  {
+    "_id": { "$oid": "636f43edcfdf846a8f83bfaa" },
+    "name": "sports",
+    "created_at": { "$date": { "$numberLong": "1668235095391" } },
+    "updated_at": { "$date": { "$numberLong": "1668235095391" } }
+  },
+  {
+    "_id": { "$oid": "636f43edcfdf846a8f83bfab" },
+    "name": "news",
+    "created_at": { "$date": { "$numberLong": "1668235095391" } },
+    "updated_at": { "$date": { "$numberLong": "1668235095391" } }
+  }
+]

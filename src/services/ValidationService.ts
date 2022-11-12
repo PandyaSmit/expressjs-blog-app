@@ -69,7 +69,7 @@ export class ValidationService {
     try {
       const blogCreateSchema = {
         title: Joi.string().required(),
-        description: Joi.string(),
+        description: Joi.string().required(),
         status: Joi.string()
           .valid(blogs_status_enum.unpublished, blogs_status_enum.published)
           .required(),

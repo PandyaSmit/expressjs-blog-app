@@ -1,0 +1,13 @@
+[
+  {
+    "_id": { "$oid": "636f3f574932096646916730" },
+    "name": "admin",
+    "email": "admin@gmail.com",
+    "password": "U2FsdGVkX1/4eylrDGhHJSCtV2aoomKUoMaWzw1aFds=",
+    "dob": { "$date": { "$numberLong": "965001600000" } },
+    "role": "admin",
+    "created_at": { "$date": { "$numberLong": "1668235095287" } },
+    "updated_at": { "$date": { "$numberLong": "1668235095287" } },
+    "__v": { "$numberInt": "0" }
+  }
+]
