@@ -16,9 +16,4 @@ userRoutes.post("/register", [
  */
 userRoutes.post("/login", [ValidationService.login, UserControllers.login]);
 
-/**
- * Account auth
- */
-userRoutes.get("/auth", [UserControllers.auth]);
-
 export { userRoutes };

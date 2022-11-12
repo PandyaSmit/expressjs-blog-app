@@ -8,3 +8,5 @@ export const MONGO_URL =
 export const NODE_CONFIGS = {
   PORT: process.env.NODE_PORT || 8000,
 };
+
+export const SECRET_KEY = process.env.SECRET_KEY || "s3cre7";
