@@ -1,14 +1,14 @@
 import * as express from "express";
-import { BlogsMiddleware } from "../middlewares/BlogsMiddleware";
+import { BlogsControllers } from "../controllers/BlogsControllers";
 
 const blogsRoutes: express.Router = express.Router();
 
-blogsRoutes.post("/", [BlogsMiddleware.list]);
+blogsRoutes.post("/", [BlogsControllers.list]);
 
-blogsRoutes.post("/list", [BlogsMiddleware.list]);
+blogsRoutes.post("/list", [BlogsControllers.list]);
 
-blogsRoutes.put("/:id", [BlogsMiddleware.list]);
+blogsRoutes.put("/:id", [BlogsControllers.list]);
 
-blogsRoutes.delete("/:id", [BlogsMiddleware.list]);
+blogsRoutes.delete("/:id", [BlogsControllers.list]);
 
 export { blogsRoutes };

@@ -1,13 +1,20 @@
 import * as express from "express";
 import { UserService } from "../services/UserService";
 
-export class UserMiddleware {
+export class UserControllers {
   static async register(
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
   ) {
     try {
+      const { email } = req.body;
+      const userExists = await UserService.findOne({ email });
+
+      if (userExists) {
+        return res.status(409).send({ message: "email already registered" });
+      }
+
       await UserService.create(req.body);
       return res.status(201).send({ message: "user created" });
     } catch (error) {
@@ -22,8 +29,7 @@ export class UserMiddleware {
     next: express.NextFunction
   ) {
     try {
-      const email = req.body.email;
-      const password = req.body.password;
+      const { email, password } = req.body;
       const user = await UserService.findOne({ email });
 
       if (!user) {

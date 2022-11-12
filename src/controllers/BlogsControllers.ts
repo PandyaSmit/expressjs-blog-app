@@ -1,6 +1,6 @@
 import * as express from "express";
 
-export class BlogsMiddleware {
+export class BlogsControllers {
   static list(
     req: express.Request,
     res: express.Response,

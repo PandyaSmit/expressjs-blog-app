@@ -2,57 +2,61 @@ import _ from "lodash";
 import * as express from "express";
 import Joi, { ValidationResult } from "joi";
 
-export const register = (
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
-) => {
-  try {
-    const resgiterSchema = {
-      email: Joi.string().required(),
-      password: Joi.string().trim().min(8).required(),
-      organizationName: Joi.string().required(),
-      preferredLanguage: Joi.string(),
-      phone: Joi.string().allow(""),
-    };
+export class ValidationService {
+  static register = (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) => {
+    try {
+      const now = Date.now();
+      const cutoffDate = new Date(now - 1000 * 60 * 60 * 24 * 365 * 21); // go back by 21 years
 
-    const schema = Joi.object().keys(resgiterSchema);
+      const resgiterSchema = {
+        email: Joi.string().email().required(),
+        password: Joi.string().trim().min(8).required(),
+        name: Joi.string().required(),
+        dob: Joi.date().max(cutoffDate).required(),
+      };
 
-    const validationResult: ValidationResult = schema.validate(req.body);
+      const schema = Joi.object().keys(resgiterSchema);
 
-    if (validationResult.error) {
-      return res.status(400).send({ error: validationResult.error });
+      const validationResult: ValidationResult = schema.validate(req.body);
+
+      if (validationResult.error) {
+        return res.status(400).send({ error: validationResult.error });
+      }
+
+      next();
+    } catch (error) {
+      console.error(error);
+      return res.status(500);
     }
+  };
 
-    next();
-  } catch (error) {
-    console.error(error);
-    return res.status(500);
-  }
-};
+  static login = (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) => {
+    try {
+      const loginSchema = {
+        email: Joi.string().required(),
+        password: Joi.string().required(),
+      };
 
-export const login = (
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
-) => {
-  try {
-    const loginSchema = {
-      password: Joi.string().required(),
-      email: Joi.string().required(),
-    };
+      const schema = Joi.object().keys(loginSchema);
 
-    const schema = Joi.object().keys(loginSchema);
+      const validationResult: ValidationResult = schema.validate(req.body);
 
-    const validationResult: ValidationResult = schema.validate(req.body);
+      if (validationResult.error) {
+        return res.status(400).send({ error: validationResult.error });
+      }
 
-    if (validationResult.error) {
-      return res.status(400).send({ error: validationResult.error });
+      next();
+    } catch (error) {
+      console.error(error);
+      return res.status(500);
     }
-
-    next();
-  } catch (error) {
-    console.error(error);
-    return res.status(500);
-  }
-};
+  };
+}
